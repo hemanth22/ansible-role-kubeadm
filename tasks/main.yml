@@ -1,2 +1,75 @@
 ---
-# tasks file for hemanth22.kubeadm
+- name: Download docker installer
+  get_url: url=https://get.docker.com/ dest=/tmp/docker-install.sh
+
+- name: Changing permissions for docker installer
+  file:
+    path: /tmp/docker-install.sh
+    mode: '777'
+
+- name: Executing docker installer
+  shell: /tmp/docker-install.sh
+
+- name: Grant access to vagrant
+  command: usermod -aG docker $user
+
+- name: start Docker
+  service:
+    name: docker
+    enabled: true
+    state: started
+
+- name: disable SELinux
+  command: setenforce 0
+
+- name: disable SELinux on reboot
+  command: sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+
+- name: Enable transparent masquerading
+  command: modprobe br_netfilter
+
+- name: ensure net.bridge.bridge-nf-call-ip6tables is set to 1
+  sysctl:
+   name: net.bridge.bridge-nf-call-ip6tables
+   value: 1
+   state: present
+
+- name: ensure net.bridge.bridge-nf-call-iptables is set to 1
+  sysctl:
+   name: net.bridge.bridge-nf-call-iptables
+   value: 1
+   state: present
+
+- name: Disable all memory swaps to increase performance
+  command: swapoff -a
+
+- name: add Kubernetes' YUM repository
+  yum_repository:
+   name: Kubernetes
+   description: Kubernetes YUM repository
+   baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+   gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+   gpgcheck: true
+
+- name: install kubelet
+  yum:
+    name: kubelet-1.18.0
+    state: present
+    update_cache: true
+
+- name: install kubeadm
+  yum:
+    name: kubeadm-1.18.0
+    state: present
+
+- name: start kubelet
+  service:
+    name: kubelet
+    enabled: true
+    state: started
+
+- name: install kubectl
+  yum:
+    name: kubectl-1.18.0
+    state: present
+    allow_downgrade: true
