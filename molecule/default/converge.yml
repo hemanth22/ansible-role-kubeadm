@@ -4,5 +4,5 @@
   become: true
   gather_facts: false
   roles:
-    - role: hemanth22.ci
+    - role: hemanth22.kubeadm
       tags: molecule-idempotence-notest
