@@ -24,7 +24,9 @@
   command: sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
 
 - name: Enable transparent masquerading
-  command: modprobe br_netfilter
+  modprobe:
+    name: br_netfilter
+    state: present
 
 - name: ensure net.bridge.bridge-nf-call-ip6tables is set to 1
   sysctl:
