@@ -16,8 +16,9 @@
     enabled: true
     state: started
 
-- name: disable SELinux
-  command: setenforce 0
+- name: Disable SELinux
+  ansible.posix.selinux:
+    state: disabled
 
 - name: disable SELinux on reboot
   command: sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
