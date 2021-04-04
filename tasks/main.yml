@@ -41,7 +41,8 @@
     state: present
 
 - name: Disable all memory swaps to increase performance
-  shell: "swapoff -a"
+  command: swapoff -a
+  ignore_errors: true
 
 - name: add Kubernetes' YUM repository
   yum_repository:
