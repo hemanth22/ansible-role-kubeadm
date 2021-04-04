@@ -5,7 +5,7 @@ sudo: required
 
 env:
   global:
-    - ROLE_NAME: ci
+    - ROLE_NAME: kubeadm
   matrix:
     - MOLECULE_DISTRO: centos7
 
