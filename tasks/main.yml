@@ -10,9 +10,6 @@
 - name: Executing docker installer
   shell: /tmp/docker-install.sh
 
-- name: Grant access to vagrant
-  command: usermod -aG docker $user
-
 - name: start Docker
   service:
     name: docker
